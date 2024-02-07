@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drivers</title>
+</head>
+<body>
+<div th:switch="${drivers.size()}">
+  <h2 th:case="0">Водители не найдены</h2>
+  <div th:case="*">
+    <h2>Список водителей</h2>
+    <table border="3">
+      <thead>
+      <tr>
+        <th>id Водителя</th>
+        <th>Имя</th>
+        <th>Номер телефона</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="driver : ${drivers}">
+        <td th:text="${driver.id}"></td>
+        <td th:text="${driver.name}"></td>
+        <td th:text="${driver.phoneNumber}" aria-posinset=""></td>
+
+        <td><a th:href="@{update/{id}(id=${driver.id})}">Изменить</a></td>
+        <td><a th:href="@{delete/{id}(id=${driver.id})}">Удалить</a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <p><a href="/drivers/create">Добавить водителя</a></p>
+</div>
+<div>
+  <p><a th:href="@{~/}">Вернуться на главную страницу</a></p>
+</div>
+
+</body>
+</html>

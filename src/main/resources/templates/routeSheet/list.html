@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Route Sheets</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+<style>
+    .commentLoner, .commentTrain {
+        white-space: pre-wrap;
+        height: 250px;
+        vertical-align: top;
+        width: 250px;
+
+    }
+
+    .button-row button, .button-row form {
+        display: inline-block;
+        align-items: center;
+        margin-right: 10px; /* добавьте отступ между кнопками, если необходимо */
+    }
+    .a {
+        display: inline-block;
+        margin-right: 10px;
+        background-color: #00a1ffeb;
+        color: #fff;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 3px;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: sans-serif;
+    }
+    .a:hover {
+        background-color: #0056b3;
+    }
+</style>
+<script>
+    function copyText(button) {
+        var row = button.parentNode.parentNode; // Получаем родительскую строку
+        var textarea = row.querySelector('.comment'); // Находим textarea в этой строке
+
+        textarea.select(); // Выделяем текст в textarea
+        document.execCommand('copy'); // Копируем текст в буфер обмена
+        textarea.setSelectionRange(0, 0);
+    }
+</script>
+<table>
+    <tr>
+        <th>Одиночки</th>
+    </tr>
+    <tr>
+        <td th:each="routeSheet : ${routeSheetList}"
+            th:if="!${routeSheet.isEmpty}And${routeSheet.typeOfTruck}=='Одиночка'">
+            <table border="2">
+                <tr>
+                    <td th:text="${routeSheet.truck}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${routeSheet.driverName}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${routeSheet.driverPhoneNumber}"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="button-row">
+                            <textarea class="commentLoner" th:utext="${routeSheet.routeSheet}"></textarea></br>
+                            <button onclick="copyText(this)">Скопировать весь текст</button>
+                            <button onclick="sendTextLoner(this)"><img src="/telegram_icon.png" alt="Telegram"></button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <th>Электрички</th>
+    </tr>
+    <tr>
+        <td th:each="routeSheet : ${routeSheetList}"
+            th:if="!${routeSheet.isEmpty}And${routeSheet.typeOfTruck}=='Электричка'">
+            <table border="2">
+                <tr>
+                    <td th:text="${routeSheet.truck}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${routeSheet.driverName}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${routeSheet.driverPhoneNumber}"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="button-row">
+                            <textarea class="commentTrain" th:utext="${routeSheet.routeSheet}"></textarea></br>
+                            <button onclick="copyText(this)">Скопировать весь текст</button>
+                            <button onclick="sendTextTrain(this)"><img src="/telegram_icon.png" alt="Telegram"></button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+
+<br>
+<button class="a" id="sendMessageButton" th:data-date="${date}" >Отправить все листы в Telegram</button>
+<br>
+<div>
+    <p><a class="a" th:href="@{~/}">Вернуться на главную страницу</a></p>
+    <p><a class="a" href="/orders/create">Создать заказ</a></p>
+    <p><a class="a" href="/orders">Заказы на сегодня</a></p>
+    <p><a class="a" href="/orders/tomorrow">Заказы на завтра</a></p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var sendMessageButton = document.getElementById('sendMessageButton');
+        sendMessageButton.addEventListener('click', function() {
+            // Получаем дату из data-date атрибута кнопки
+            var date = this.getAttribute('data-date');
+
+            // AJAX запрос на /message/ с датой
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/send/message/' + encodeURIComponent(date), true);
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // Отображаем соответствующее всплывающее окно
+                    var message = (xhr.status === 200) ? 'Листы успешно отправлены' : 'Что-то пошло не так';
+                    alert(message);
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
+<script>
+    function sendTextLoner(button) {
+        var textarea = button.parentNode.querySelector('.commentLoner');
+        var text = textarea.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/send/loner', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // alert("ok");
+                }
+                if (xhr.status === 409) {
+                    alert("не отправилось");
+                }
+            }
+        };
+        xhr.send('message=' + encodeURIComponent(text));
+    }
+</script>
+<script>
+    function sendTextTrain(button) {
+        var textarea = button.parentNode.querySelector('.commentTrain');
+        var text = textarea.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/send/train', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // alert("ok");
+                }
+                if (xhr.status === 409) {
+                    alert("не отправилось");
+                }
+            }
+        };
+        xhr.send('message=' + encodeURIComponent(text));
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Закрепление водителей за машинами</title>
+</head>
+<body>
+<style>
+    .top {
+        vertical-align: top;
+    }
+</style>
+<form th:action="@{~/trucks/setDrivers}" th:object="${trucks}" method="post">
+<table>
+    <tr>
+        <th><p>Одиночки</p></th>
+        <th><p>Электрички</p></th>
+    </tr>
+    <tr>
+        <td class="top">
+           <table>
+               <tr th:each="truck, status : ${trucks.listOfLoner}">
+                   <input type="hidden" th:field="${trucks.listOfLoner[__${status.index}__].id}"/>
+                   <input type="hidden" th:field="${trucks.listOfLoner[__${status.index}__].gosNumber}"/>
+                   <input type="hidden" th:field="${trucks.listOfLoner[__${status.index}__].type}"/>
+                   <td th:text="${truck.gosNumber}"></td>
+                   <td>
+                       <select th:field="${trucks.listOfLoner[__${status.index}__].driver.id}">
+                           <option th:each="driver : ${drivers}" th:value="${driver.id}"
+                                   th:text="${driver.name}"></option>
+                       </select>
+                   </td>
+               </tr>
+           </table>
+        </td>
+        <td class="top">
+            <table>
+                <tr th:each="truck, status : ${trucks.listOfTrain}">
+                    <input type="hidden" th:field="${trucks.listOfTrain[__${status.index}__].id}"/>
+                    <input type="hidden" th:field="${trucks.listOfTrain[__${status.index}__].gosNumber}"/>
+                    <input type="hidden" th:field="${trucks.listOfTrain[__${status.index}__].type}"/>
+                    <td th:text="${truck.gosNumber}"></td>
+                    <td>
+                        <select th:field="${trucks.listOfTrain[__${status.index}__].driver.id}">
+                            <option th:each="driver : ${drivers}" th:value="${driver.id}"
+                                    th:text="${driver.name}"></option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+    <br>
+    <button type="submit">Сохранить</button>
+    <br>
+    <p><a th:href="@{~/}">Вернуться на главную страницу</a></p>
+</form>
+</body>
+</html>

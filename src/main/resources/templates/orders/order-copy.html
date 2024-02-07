@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Копия заказа</title>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css}">
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.ru.min.js}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.datepicker').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1, // Неделя начинается с понедельника
+                language: 'ru' // Язык: русский
+            }).on('changeDate', function(e){
+                $(this).datepicker('hide');
+            });
+        });
+    </script>
+</head>
+<body>
+<style>
+    .comment{
+    white-space: pre-wrap;
+    height: 400px;
+    vertical-align: top;
+    width: 250px;
+    }
+
+    textarea {
+        margin-bottom: 6px;
+    }
+
+    input, select {
+        width: 100%; /* или другую необходимую ширину */
+        box-sizing: border-box; /* чтобы ширина input включала в себя padding и border */
+        margin-bottom: 6px;
+    }
+
+    body {
+        padding-top: 20px;
+        padding-left: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-group label {
+        margin-right: 10px;
+    }
+
+    label {
+        white-space: nowrap;
+    }
+
+</style>
+<form action="#" th:action="@{/orders/create}" th:object="${order}" method="post">
+    <div class="form-group">
+        <label for="datepicker">Дата заказа:</label>
+        <input type="text" autocomplete="off" class="datepicker" id="datepicker" th:field="*{orderDate}"/><br>
+    </div>
+
+    <div class="form-group">
+        <label for="loadingLocation">Погрузка:</label>
+        <input type="text" th:field="*{loadingLocation}" id="loadingLocation" placeholder="Погрузка"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="material">Материал:</label>
+        <input type="text" th:field="*{material}" id="material" placeholder="Материал"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="loadingOrganization">Грузим от:</label>
+        <input type="text" th:field="*{loadingOrganization}" id="loadingOrganization" placeholder="Грузим от"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="loading">Грузим:</label>
+        <input type="text" autocomplete="off" th:field="*{loading}" id="loading" placeholder="Грузим"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="unloading">Сдаём:</label>
+        <input type="text" autocomplete="off" th:field="*{unloading}" id="unloading" placeholder="Сдаём"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="uploadingAddress">Точный адрес выгрузки:</label>
+        <input type="text" th:field="*{uploadingAddress}" id="uploadingAddress" placeholder="Точный адрес выгрузки"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="receiverСontact">Контакт приемщика:</label>
+        <input type="text" autocomplete="off" th:field="*{receiverСontact}" id="receiverСontact"
+               placeholder="Контакт приемщика"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="shipper">Грузоотправитель:</label>
+        <input type="text" th:field="*{shipper}" id="shipper" placeholder="Грузоотправитель"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="consignee">Грузополучатель:</label>
+        <input type="text" th:field="*{consignee}" id="consignee" placeholder="Грузополучатель"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="freightRate">Ставка перевозки:</label>
+        <input type="text" autocomplete="off" th:field="*{freightRate}" id="freightRate" placeholder="Ставка перевозки"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="materialRate">Ставка материала:</label>
+        <input type="text" autocomplete="off" th:field="*{materialRate}" id="materialRate"
+               placeholder="Ставка материала"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="rate1c">Ставка 1С:</label>
+        <input type="text" autocomplete="off" th:field="*{rate1c}" id="rate1c" placeholder="Ставка 1С"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="contractor">Контрагент:</label>
+        <input type="text" th:field="*{contractor}" id="contractor" placeholder="Контрагент"><br>
+    </div>
+    <br><br>
+    <div class="form-group">
+        <label for="numberOfTrips">Кол-во рейсов:</label>
+        <input type="text" autocomplete="off" th:field="*{numberOfTrips}" id="numberOfTrips"
+               placeholder="Кол-во рейсов"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="uploadingLocation">Выгрузка:</label>
+        <input type="text" th:field="*{uploadingLocation}" id="uploadingLocation" placeholder="Выгрузка"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="truck">Тип машины:</label>
+        <select id="truck" th:field="*{typeOfTruck}">
+            <option value="Одиночка">Одиночка</option>
+            <option value="Электричка">Электричка</option>
+        </select><br>
+    </div>
+
+    <div class="form-group">
+        <label for="manager">Менеджер:</label>
+        <select id="manager" th:field="*{manager.id}">
+            <option th:each="manag : ${managers}" th:value="${manag.id}" th:text="${manag.name}"></option>
+        </select><br>
+    </div>
+
+    <div class="form-group">
+        <label for="cargoVolume">Общий объём груза:</label>
+        <input type="text" autocomplete="off" th:field="*{cargoVolume}" id="cargoVolume"
+               placeholder="Общий объём груза"><br>
+    </div>
+
+    <div class="form-group">
+        <label for="shortComment">Доп. инф.:</label>
+        <input type="text" autocomplete="off" th:field="*{shortComment}" id="shortComment"
+               placeholder="Доп. информация"><br>
+    </div>
+
+    <label for="commentsOrder">Комментарий:</label><br>
+    <textarea class="comment" th:field="*{commentsOrder}" id="commentsOrder"
+              placeholder="Комментарий"></textarea><br>
+
+    <input type="submit" value="Создать заказ">
+</form>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update truck</title>
+</head>
+<body>
+<form action="#" th:action="@{/trucks/update}" th:object="${truck}" method="post">
+
+  <input type="hidden" readonly="readonly" th:field="*{id}" id="id" placeholder="id Водителя">
+  <input type="hidden" th:field="*{driver.id}">
+  <input type="hidden" th:field="*{isDeleted}">
+  <label for="gosNumber">Гос. номер</label>
+  <input type="text" th:field="*{gosNumber}" id="gosNumber" placeholder="Гос. номер">
+  <label for="truck">Тип машины:</label>
+  <select id="truck" th:field="*{type}">
+    <option value="Одиночка">Одиночка</option>
+    <option value="Электричка">Электричка</option>
+  </select><br><br>
+
+  <input type="submit" value="Сохранить">
+</form><br>
+<form action="#" th:action="@{/trucks/returnTruck}" th:object="${truck}" method="post" th:if="${truck.isDeleted}==true">
+  <input type="hidden" readonly="readonly" th:field="*{id}">
+  <input type="submit" value="Восстановить">
+</form>
+
+</body>
+</html>

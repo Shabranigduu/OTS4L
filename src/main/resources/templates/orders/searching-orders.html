@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы</title>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet"
+          th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css}">
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.ru.min.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1, // Неделя начинается с понедельника
+                language: 'ru' // Язык: русский
+            }).on('changeDate', function (e) {
+                $(this).datepicker('hide');
+            });
+        });
+    </script>
+</head>
+<body>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 300px;
+        margin-bottom: 0px;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .p {
+        background-color: rgba(149, 162, 164, 0.99); /* Цвет фона */
+        color: #333; /* Цвет текста */
+        font-size: 20px; /* Размер шрифта */
+        font-weight: bold; /* Жирный текст */
+        padding: 0px 20px; /* Внутренние отступы */
+        margin: 0; /* Внешние отступы */
+    }
+
+    .date {
+        background-color: rgba(91, 207, 225, 0.99); /* Цвет фона */
+        color: #1a1919; /* Цвет текста */
+        font-size: 24px; /* Размер шрифта */
+        font-weight: bold; /* Жирный текст */
+        padding: 0px 40px; /* Внутренние отступы */
+        margin: 0; /* Внешние отступы */
+        background-size: 100% 100%; /* Растянуть фон на всю ширину и высоту элемента */
+        width: 100%; /* Занимать всю доступную ширину */
+    }
+
+    .comment {
+        white-space: pre-wrap;
+        height: 250px;
+        vertical-align: top;
+        width: 100%;
+    }
+
+    .a {
+        display: inline-block;
+        margin-right: 10px;
+        background-color: #007bff;
+        color: #fff;
+        padding: 1px 5px;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+
+    a:hover {
+        background-color: #0056b3;
+    }
+</style>
+<table>
+    <td th:each="order : ${orders}">
+        <table>
+            <tr>
+                <td style="height: 60px" th:text="${order.typeOfTruck}"></td>
+                <td th:text="${order.loadingLocation}"></td>
+                <td th:text="${order.uploadingLocation}"></td>
+                <td th:text="${order.cargoVolume}"></td>
+            </tr>
+            <tr>
+                <td colspan="4"><textarea class="comment" th:text="${order.commentForOrdersList}"></textarea></td>
+            </tr>
+        </table>
+        <div align="center">
+            <table>
+                <tr>
+                    <td colspan="1" style="border: 0;"><a class="a" th:href="@{~/orders/update/{id}(id=${order.id})}">Изменить</a></td>
+                    <td colspan="2" style="border: 0;"><a class="a" th:href="@{~/orders/copy/{id}(id=${order.id})}">Копировать</a></td>
+                    <td colspan="1" style="border: 0;"><a class="a" th:href="@{~/orders/delete/{id}(id=${order.id})}">Удалить</a></td>
+                </tr>
+            </table>
+        </div>
+    </td>
+</table>
+<div>
+    <p><a class="a" href="/orders/create">Создать заказ</a></p>
+    <p><a class="a" href="/orders">Заказы на сегодня</a></p>
+    <p><a class="a" href="/orders/tomorrow">Заказы на завтра</a></p>
+</div>
+<form th:action="@{/orders/date}" method="get">
+    <label for="date">Выберите дату:</label>
+    <input type="text" autocomplete="off" class="datepicker" id="date" name="date"/>
+    <button class="a" type="submit">Заказы на дату</button>
+</form>
+<br>
+<div>
+    <form th:action="@{/orders/range}" method="get">
+        <label for="startDate">Начало периода:</label>
+        <input type="text" autocomplete="off" class="datepicker" id="startDate" name="startDate" required>
+
+        <label for="endDate">Конец периода:</label>
+        <input type="text" autocomplete="off" class="datepicker" id="endDate" name="endDate" required>
+
+        <button class="a" type="submit">Поиск заказов за период</button>
+    </form>
+</div>
+<br>
+<div>
+    <form action="#" th:action="@{/orders/search_orders}" method="get">
+        <label for="keyword">Поиск заказа:</label>
+        <input type="text" autocomplete="off" id="keyword" name="keyword">
+        <button class="a" type="submit">Поиск</button>
+    </form>
+</div>
+<br>
+<div>
+    <p><a class="a" th:href="@{~/}">Вернуться на главную страницу</a></p>
+</div>
+<br>
+
+</body>
+</html>

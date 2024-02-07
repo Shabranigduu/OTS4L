@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update driver</title>
+</head>
+<body>
+<form action="#" th:action="@{/drivers/update}" th:object="${driver}" method="post">
+  <label  for="id">id Водителя</label>
+  <input type="text" readonly="readonly" th:field="*{id}" id="id" placeholder="id Водителя">
+  <label for="name">Имя</label>
+  <input type="text" th:field="*{name}" id="name" placeholder="Имя">
+  <label for="phoneNumber">Номер телефона</label>
+  <input type="number" th:field="*{phoneNumber}" id="phoneNumber" placeholder="Номер телефона">
+
+  <input type="submit" value="Сохранить">
+</form>
+</body>
+</html>

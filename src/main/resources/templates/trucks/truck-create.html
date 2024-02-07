@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create truck</title>
+
+</head>
+<body>
+<form action="#" th:action="@{/trucks/create}" th:object="${truck}" method="post">
+
+    <label for="gosNumber">Гос. номер</label>
+    <input type="text" th:field="*{gosNumber}" id="gosNumber" placeholder="Гос. номер">
+    <label for="truck">Тип машины:</label>
+    <select id="truck" th:field="*{type}">
+        <option value="Одиночка">Одиночка</option>
+        <option value="Электричка">Электричка</option>
+    </select><br>
+
+    <input type="submit" value="Добавить машину">
+</form>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы</title>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet"
+          th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css}">
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.ru.min.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1, // Неделя начинается с понедельника
+                language: 'ru' // Язык: русский
+            }).on('changeDate', function (e) {
+                $(this).datepicker('hide');
+            });
+        });
+    </script>
+</head>
+<body>
+<style>
+
+    tr:nth-child(even) {
+        background-color: #f8f7f7;
+    }
+
+    .p {
+        background-color: rgba(149, 162, 164, 0.99); /* Цвет фона */
+        color: #333; /* Цвет текста */
+        font-size: 20px; /* Размер шрифта */
+        font-weight: bold; /* Жирный текст */
+        padding: 0px 20px; /* Внутренние отступы */
+        margin: 0; /* Внешние отступы */
+    }
+
+    .date {
+        background-color: rgba(91, 207, 225, 0.99); /* Цвет фона */
+        color: #1a1919; /* Цвет текста */
+        font-size: 24px; /* Размер шрифта */
+        font-weight: bold; /* Жирный текст */
+        padding: 0px 40px; /* Внутренние отступы */
+        margin: 0; /* Внешние отступы */
+        background-size: 100% 100%; /* Растянуть фон на всю ширину и высоту элемента */
+        width: 100%; /* Занимать всю доступную ширину */
+    }
+
+    .truck-type {
+        background-color: rgba(196, 225, 91, 0.99); /* Цвет фона */
+        color: #1a1919; /* Цвет текста */
+        font-size: 20px; /* Размер шрифта */
+        font-weight: bold; /* Жирный текст */
+        padding: 0px 40px; /* Внутренние отступы */
+        margin: 0; /* Внешние отступы */
+        background-size: 100% 100%; /* Растянуть фон на всю ширину и высоту элемента */
+        width: 100%; /* Занимать всю доступную ширину */
+    }
+
+    .comment {
+        white-space: pre-wrap;
+        height: 250px;
+        vertical-align: top;
+        width: 100%;
+    }
+
+    .a {
+        display: inline-block;
+        margin-right: 10px;
+        background-color: #007bff;
+        color: #fff;
+        padding: 1px 5px;
+        text-decoration: none;
+        border-radius: 3px;
+    }
+
+    a:hover {
+        background-color: #0056b3;
+    }
+
+    .truck {
+        background-color: #d7d6d6; /* Цвет фона подобран из Telegram */
+        border-radius: 10px; /* Закругление углов блока */
+        padding: 5px; /* Отступ внутри блока */
+        display: inline-block; /* Сделать блок равным ширине текста */
+        margin: 5px; /* Добавим немного отступа вокруг блока */
+    }
+
+    /* Стиль для текста внутри блока */
+    .truck-span {
+        font-family: sans-serif; /* Шрифт без засечек, как у Telegram */
+        color: #3d3d3d; /* Цвет текста подобран из Telegram */
+        font-size: 18px;
+        font-weight: bold;
+
+    }
+
+    table {
+        /* Ширина таблицы занимает всю доступную ширину */
+        table-layout: fixed; /* Устанавливаем фиксированную ширину ячеек */
+    }
+
+    td {
+        white-space: nowrap; /* Предотвращаем перенос слов */
+        text-align: center; /* Выравнивание по левому краю */
+        padding: 8px; /* Добавляем отступы внутри ячеек */
+        border: 1px solid #dddddd; /* Добавляем границу для ячеек */
+    }
+    th {
+
+        text-align: center; /* Выравнивание по левому краю */
+        padding: 8px; /* Добавляем отступы внутри ячеек */
+        border: 1px solid #dddddd; /* Добавляем границу для ячеек */
+    }
+
+    thead th {
+        background-color: #f2f2f2; /* Цвет фона заголовков */
+    }
+</style>
+<div>
+    <p class="date" th:text="${date}"></p>
+</div>
+<div><p class="truck-type" th:text="Одиночки"></p></div>
+<table>
+    <tr th:each="routeSheet : ${routeSheetListLoners}" th:if="${routeSheet.trips[0].order} != null">
+
+        <div class="truck">
+            <span class="truck-span"
+                  th:text="${routeSheet.truck.gosNumber} + ' | ' + ${routeSheet.trips[0].driver.name} + ' | ' + ${routeSheet.trips[0].driver.phoneNumber}"></span>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>№<br>рейса</th>
+                <th>Погрузка</th>
+                <th>Материал</th>
+                <th>Грузим от</th>
+                <th>Выгрузка</th>
+                <th>Контрагент</th>
+                <th>Менеджер</th>
+                <th>Ставка 1С</th>
+                <th>Ставка<br>перевозки</th>
+                <th>Стоимость<br>материала</th>
+                <th>Грузим</th>
+                <th>Сдаём</th>
+                <th>ГО</th>
+                <th>ГП</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="trip, status : ${routeSheet.trips}" th:if="${trip.order} != null">
+                <td th:text="${status.index}+1"></td>
+                <td th:text="${trip.order.loadingLocation}"></td>
+                <td th:text="${trip.order.material}"></td>
+                <td th:text="${trip.order.loadingOrganization}"></td>
+                <td th:text="${trip.order.uploadingLocation}"></td>
+                <td th:text="${trip.order.contractor}"></td>
+                <td th:text="${trip.order.manager.name}"></td>
+                <td th:text="${trip.order.rate1c}"></td>
+                <td th:text="${trip.order.freightRate}"></td>
+                <td th:text="${trip.order.materialRate}"></td>
+                <td th:text="${trip.order.loading}"></td>
+                <td th:text="${trip.order.unloading}"></td>
+                <td th:text="${trip.order.shipper}"></td>
+                <td th:text="${trip.order.consignee}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </tr>
+</table><br>
+
+<div><p class="truck-type" th:text="Электрички"></p></div>
+<table>
+    <tr th:each="routeSheet : ${routeSheetListTrains}" th:if="${routeSheet.trips[0].order} != null">
+
+        <div class="truck">
+            <span class="truck-span"
+                  th:text="${routeSheet.truck.gosNumber} + ' | ' + ${routeSheet.trips[0].driver.name} + ' | ' + ${routeSheet.trips[0].driver.phoneNumber}"></span>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>№<br>рейса</th>
+                <th>Погрузка</th>
+                <th>Материал</th>
+                <th>Грузим от</th>
+                <th>Выгрузка</th>
+                <th>Контрагент</th>
+                <th>Менеджер</th>
+                <th>Ставка 1С</th>
+                <th>Ставка<br>перевозки</th>
+                <th>Стоимость<br>материала</th>
+                <th>Грузим</th>
+                <th>Сдаём</th>
+                <th>ГО</th>
+                <th>ГП</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="trip, status : ${routeSheet.trips}" th:if="${trip.order} != null">
+                <td th:text="${status.index}+1"></td>
+                <td th:text="${trip.order.loadingLocation}"></td>
+                <td th:text="${trip.order.material}"></td>
+                <td th:text="${trip.order.loadingOrganization}"></td>
+                <td th:text="${trip.order.uploadingLocation}"></td>
+                <td th:text="${trip.order.contractor}"></td>
+                <td th:text="${trip.order.manager.name}"></td>
+                <td th:text="${trip.order.rate1c}"></td>
+                <td th:text="${trip.order.freightRate}"></td>
+                <td th:text="${trip.order.materialRate}"></td>
+                <td th:text="${trip.order.loading}"></td>
+                <td th:text="${trip.order.unloading}"></td>
+                <td th:text="${trip.order.shipper}"></td>
+                <td th:text="${trip.order.consignee}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </tr>
+</table>
+<br><br>
+
+<div>
+    <p><a class="a" href="/orders/create">Создать заказ</a></p>
+    <p><a class="a" href="/orders">Заказы на сегодня</a></p>
+
+</div>
+<form th:action="@{/orders/date}" method="get">
+    <label for="date">Выберите дату:</label>
+    <input type="text" autocomplete="off" class="datepicker" id="date" name="date"/>
+    <button class="a" type="submit">Заказы на дату</button>
+</form>
+<br>
+
+
+<div>
+    <form action="#" th:action="@{/orders/search_orders}" method="get">
+        <label for="keyword">Поиск заказа:</label>
+        <input type="text" autocomplete="off" id="keyword" name="keyword">
+        <button class="a" type="submit">Поиск</button>
+    </form>
+</div>
+<br>
+
+
+<div>
+    <p><a class="a" th:href="@{~/}">Вернуться на главную страницу</a></p>
+</div>
+<br>
+
+</body>
+</html>

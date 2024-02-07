@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create driver</title>
+</head>
+<body>
+<form action="#" th:action="@{/drivers/create}" th:object="${driver}" method="post">
+    <label for="name">Имя водителя</label>
+    <input type="text" th:field="*{name}" id="name" placeholder="Имя">
+    <label for="phoneNumber">Номер телефона</label>
+    <input type="number" th:field="*{phoneNumber}" id="phoneNumber" placeholder="Номер телефона">
+
+    <input type="submit" value="Добавить водителя">
+</form>
+</body>
+</html>

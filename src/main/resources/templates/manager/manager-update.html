@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update manager</title>
+</head>
+<body>
+<form action="#" th:action="@{/manager/update}" th:object="${manager}" method="post">
+
+    <input type="hidden" readonly="readonly" th:field="*{id}" id="id" placeholder="id Менеджера">
+    <input type="hidden" th:field="*{isDeleted}">
+    <label for="name">Имя</label>
+    <input type="text" th:field="*{name}" id="name" placeholder="Имя">
+    <label for="phoneNumber">Номер телефона</label>
+    <input type="number" th:field="*{phoneNumber}" id="phoneNumber" placeholder="Номер телефона">
+
+    <input type="submit" value="Сохранить">
+</form>
+</body>
+</html>

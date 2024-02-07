@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Сформированные рейсы</title>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css}">
+    <style>
+
+        table {
+            border-collapse: collapse;
+            width: 700px;
+            margin-bottom: 0px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 2px;
+        }
+
+        /*tr:nth-child(even) {*/
+        /*    background-color: #f2f2f2;*/
+        /*}*/
+
+        .top {
+            vertical-align: top;
+        }
+
+        .p {
+            background-color: rgba(149, 162, 164, 0.99); /* Цвет фона */
+            color: #333; /* Цвет текста */
+            font-size: 20px; /* Размер шрифта */
+            font-weight: bold; /* Жирный текст */
+            padding: 0px 20px; /* Внутренние отступы */
+            margin: 0; /* Внешние отступы */
+        }
+
+        .cell {
+            background-color: #D3D3D3;
+        }
+
+        .a {
+            display: inline-block;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 1px 5px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        button:hover {
+            background-color: #d8d8d8; /* Цвет кнопки при наведении */
+        }
+
+        select option {
+            background-color: #f2f2f2;
+        }
+
+        select {
+            border-radius: 3px;
+        }
+
+    </style>
+</head>
+<body>
+<form th:object="${routeSheetList}" th:action="@{/trips/create/{date}(date=${date})}" method="post">
+    <table style=" border: 3px;">
+        <thead>
+        <tr>
+            <th style="text-align: center;">Одиночки</th>
+            <th style="text-align: center;">Электрички</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="top" style="border: none">
+                <table style=" border: 2px;  border-collapse: separate; ">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Погрузка</th>
+                        <th>Выгрузка</th>
+                        <th>Кол-во<br>рейсов</th>
+                        <th>Общий объем</th>
+                        <th>Менеджер</th>
+                        <th>Доп. инф.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${ordersLoner}">
+                        <td onclick="changeColor(this)" class="cell" th:text="${ordersLoner.indexOf(order)}+1"></td>
+                        <td th:text="${order.loadingLocation}"></td>
+                        <td th:text="${order.uploadingLocation}"></td>
+                        <td th:style="${order.isCompleted} ? 'text-align: center; background-color: yellow;' : 'text-align: center;'" th:text="${order.numberOfTrips}"></td>
+                        <td style="text-align: center;" th:text="${order.cargoVolume}"></td>
+                        <td th:text="${order.manager.name}"></td>
+                        <td th:text="${order.shortComment}"></td>
+                    </tbody>
+                </table>
+            </td>
+            <td class="top" style="border: none">
+                <table style=" border: 2px;  border-collapse: separate; ">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Погрузка</th>
+                        <th>Выгрузка</th>
+                        <th>Кол-во<br>рейсов</th>
+                        <th>Общий объем</th>
+                        <th>Менеджер</th>
+                        <th>Доп. инф.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${ordersTrain}">
+                        <td onclick="changeColor(this)" class="cell" th:text="${ordersTrain.indexOf(order)}+1"></td>
+                        <td th:text="${order.loadingLocation}" aria-posinset=""></td>
+                        <td th:text="${order.uploadingLocation}"></td>
+                        <td th:style="${order.isCompleted} ? 'text-align: center; background-color: yellow;' : 'text-align: center;'" th:text="${order.numberOfTrips}"></td>
+                        <td style="text-align: center;" th:text="${order.cargoVolume}"></td>
+                        <td th:text="${order.manager.name}"></td>
+                        <td th:text="${order.shortComment}"></td>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="top" style="border: none">
+                <table border="2" class="top">
+                    <thead>
+                    <tr>
+                        <th>Машина</th>
+                        <th colspan="5">Список рейсов</th>
+                        <th>Водитель</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="routeSheet, status : ${routeSheetList.listOfLoner}">
+                        <input type="hidden" th:field="${routeSheetList.listOfLoner[__${status.index}__].id}"/>
+                        <input type="hidden" th:field="${routeSheetList.listOfLoner[__${status.index}__].routeDate}"/>
+                        <input type="hidden" th:field="${routeSheetList.listOfLoner[__${status.index}__].truck.id}"/>
+                        <td th:text="${routeSheet.truck.gosNumber}"></td>
+                        <td th:each="i : ${#numbers.sequence(0, 4)}">
+                            <input type="hidden"
+                                   th:field="${routeSheetList.listOfLoner[__${status.index}__].trips[__${i}__].id}"/>
+                            <input type="hidden"
+                                   th:field="${routeSheetList.listOfLoner[__${status.index}__].trips[__${i}__].routeSheet.id}"/>
+                            <select th:style="${(routeSheetList.listOfLoner[status.index].trips[i].order) == null} ? 'background-color: #D3D3D3;' :
+              (${colors[(ordersLoner.indexOf(routeSheetList.listOfLoner[status.index].trips[i].order))]})"
+                                    th:field="${routeSheetList.listOfLoner[__${status.index}__].trips[__${i}__].order.id}">
+                                <option th:value="${null}">--</option>
+                                <option th:each="order : ${ordersLoner}" th:value="${order.id}"
+                                        th:text="${ordersLoner.indexOf(order)}+1"
+                                        th:style="${colors[ordersLoner.indexOf(order)]}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input th:list="'driver-list-'+${status.index}"
+                                   th:name="'driver-name-'+${status.index}"
+                                   th:id="'driver-input-'+${status.index}"
+                                   th:value="${routeSheet.truck.driver.name}"
+                                   autocomplete="off"
+                                   placeholder="Выберите водителя..."/>
+
+                            <datalist th:id="'driver-list-'+${status.index}">
+                                <option th:each="driver : ${drivers}"
+                                        th:value="${driver.name}"
+                                        th:data-id="${driver.id}">
+                                </option>
+                            </datalist>
+                            <input type="hidden"
+                                   th:field="*{listOfLoner[__${status.index}__].truck.driver.id}"
+                                   th:id="'driver-id-' + ${status.index}"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td class="top" style="border: none">
+                <table border="2" class="top">
+                    <thead>
+                    <tr>
+                        <th>Машина</th>
+                        <th colspan="5">Список рейсов</th>
+                        <th>Водитель</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="routeSheet, status : ${routeSheetList.listOfTrain}">
+                        <input type="hidden" th:field="${routeSheetList.listOfTrain[__${status.index}__].id}"/>
+                        <input type="hidden" th:field="${routeSheetList.listOfTrain[__${status.index}__].routeDate}"/>
+                        <input type="hidden" th:field="${routeSheetList.listOfTrain[__${status.index}__].truck.id}"/>
+                        <td th:text="${routeSheet.truck.gosNumber}"></td>
+                        <td th:each="i : ${#numbers.sequence(0, 4)}">
+                            <input type="hidden"
+                                   th:field="${routeSheetList.listOfTrain[__${status.index}__].trips[__${i}__].id}"/>
+                            <input type="hidden"
+                                   th:field="${routeSheetList.listOfTrain[__${status.index}__].trips[__${i}__].routeSheet.id}"/>
+                            <select th:style="${(routeSheetList.listOfTrain[status.index].trips[i].order) == null} ? 'background-color: #D3D3D3;' :
+              (${colors[(ordersTrain.indexOf(routeSheetList.listOfTrain[status.index].trips[i].order))]})"
+                                    th:field="${routeSheetList.listOfTrain[__${status.index}__].trips[__${i}__].order.id}">
+                                <option th:value="${null}">--</option>
+                                <option th:each="order : ${ordersTrain}" th:value="${order.id}"
+                                        th:text="${ordersTrain.indexOf(order)}+1"
+                                        th:style="${colors[ordersTrain.indexOf(order)]}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input th:list="'driver2-list-'+${status.index}"
+                                   th:name="'driver2-name-'+${status.index}"
+                                   th:id="'driver2-input-'+${status.index}"
+                                   th:value="${routeSheet.truck.driver.name}"
+                                   autocomplete="off"
+                                   placeholder="Выберите водителя..."/>
+
+                            <datalist th:id="'driver2-list-'+${status.index}">
+                                <option th:each="driver : ${drivers}"
+                                        th:value="${driver.name}"
+                                        th:data-id="${driver.id}">
+                                </option>
+                            </datalist>
+                            <input type="hidden"
+                                   th:field="*{listOfTrain[__${status.index}__].truck.driver.id}"
+                                   th:id="'driver2-id-' + ${status.index}"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <button style="padding: 10px 20px; font-size: 24px; font-weight: bold; margin: 5px; border: 1px solid #232323; border-radius: 4px; "
+            type="submit">Сохранить
+    </button>
+</form>
+<br>
+<div>
+    <form action="#" th:action="@{~/routeSheet/{date}(date=${date})}" method="get">
+        <input type="submit" value="Сформировать маршрутные листы">
+    </form>
+    <br>
+    <div>
+        <p><a class="a" th:href="@{~/}">Вернуться на главную страницу</a></p>
+        <p><a class="a" href="/orders/create">Создать заказ</a></p>
+        <p><a class="a" href="/orders">Заказы на сегодня</a></p>
+        <p><a class="a" href="/orders/tomorrow">Заказы на завтра</a></p>
+    </div>
+</div>
+<script>
+    function changeColor(element) {
+        var row = element.parentNode; // получаем родительскую строку ячейки
+        if (row.style.backgroundColor === 'yellow') {
+            row.style.backgroundColor = ''; // если цвет уже желтый, то удаляем цвет фона
+        } else {
+            row.style.backgroundColor = 'yellow'; // иначе задаем желтый цвет фона
+        }
+    }
+</script>
+<script>
+    const cells = document.querySelectorAll('.cell');
+
+    cells.forEach(cell => {
+        const number = parseInt(cell.textContent);
+        if (number === 1) {
+            cell.style.backgroundColor = '#E6B8AF';
+        } else if (number === 2) {
+            cell.style.backgroundColor = '#ADD8E6';
+        } else if (number === 3) {
+            cell.style.backgroundColor = '#98FB98';
+        } else if (number === 4) {
+            cell.style.backgroundColor = '#F0E68C';
+        } else if (number === 5) {
+            cell.style.backgroundColor = '#ef7070';
+        } else if (number === 6) {
+            cell.style.backgroundColor = '#46bee9';
+        } else if (number === 7) {
+            cell.style.backgroundColor = '#84d189';
+        } else if (number === 8) {
+            cell.style.backgroundColor = '#e7ef40';
+        } else if (number === 9) {
+            cell.style.backgroundColor = '#fdb0f1';
+        } else if (number === 10) {
+            cell.style.backgroundColor = '#8b93e9';
+        } else if (number === 11) {
+            cell.style.backgroundColor = '#FFEC8B';
+        } else if (number === 12) {
+            cell.style.backgroundColor = '#F5DEB3';
+        } else if (number === 13) {
+            cell.style.backgroundColor = '#EEE8AA';
+        } else if (number === 14) {
+            cell.style.backgroundColor = '#FFD700';
+        } else {
+            cell.style.backgroundColor = '#D3D3D3';
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('input[id^="driver-input-"]');
+        inputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                var index = this.id.split('-').pop(); // Получаем индекс
+                var option = document.querySelector('#driver-list-' + index + ' option[value="' + this.value + '"]');
+                var hiddenInput = document.getElementById('driver-id-' + index); // Получаем скрытое поле по индексу
+                if (option) {
+                    hiddenInput.value = option.getAttribute('data-id'); // Сохраняем ID выбранного водителя
+                } else {
+                    hiddenInput.value = '1'; // Очистите скрытое значение, если выбор не соответствует списку
+                }
+            });
+            input.addEventListener('focus', function () {
+                this.select(); // Это выделит весь текст в поле ввода
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var inputs = document.querySelectorAll('input[id^="driver2-input-"]');
+        inputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                var index = this.id.split('-').pop(); // Получаем индекс
+                var option = document.querySelector('#driver2-list-' + index + ' option[value="' + this.value + '"]');
+                var hiddenInput = document.getElementById('driver2-id-' + index); // Получаем скрытое поле по индексу
+                if (option) {
+                    hiddenInput.value = option.getAttribute('data-id'); // Сохраняем ID выбранного водителя
+                } else {
+                    hiddenInput.value = '1'; // Очистите скрытое значение, если выбор не соответствует списку
+                }
+            });
+            input.addEventListener('focus', function () {
+                this.select(); // Это выделит весь текст в поле ввода
+            });
+        });
+    });
+</script>
+</body>
+</html>

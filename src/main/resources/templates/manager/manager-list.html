@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager</title>
+</head>
+<body>
+<div th:switch="${manager.size()}">
+    <h2 th:case="0">Менеджеры не найдены</h2>
+    <div th:case="*">
+        <h2>Список менеджеров</h2>
+        <table border="3">
+            <thead>
+            <tr>
+                <th>id Менеджера</th>
+                <th>Имя</th>
+                <th>Номер телефона</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="manag : ${manager}">
+                <td th:text="${manag.id}"></td>
+                <td th:text="${manag.name}"></td>
+                <td th:text="${manag.phoneNumber}" aria-posinset=""></td>
+
+                <td><a th:href="@{update/{id}(id=${manag.id})}">Изменить</a></td>
+                <td><a th:href="@{delete/{id}(id=${manag.id})}">Удалить</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><a href="/manager/create">Добавить Менеджера</a></p>
+</div>
+<div>
+    <p><a th:href="@{~/}">Вернуться на главную страницу</a></p>
+</div>
+
+</body>
+</html>

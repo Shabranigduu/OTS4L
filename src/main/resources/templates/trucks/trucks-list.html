@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trucks</title>
+</head>
+<body>
+<div th:switch="${trucks.size()}">
+  <h2 th:case="0">Машины не найдены</h2>
+  <div th:case="*">
+    <h2>Машины</h2>
+    <table border="3">
+      <thead>
+      <tr>
+        <th>Гос. номер</th>
+        <th>Тип машины</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="truck : ${trucks}">
+
+        <td th:text="${truck.gosNumber}"></td>
+        <td th:text="${truck.type}"></td>
+
+        <td><a th:href="@{update/{id}(id=${truck.id})}">Изменить</a></td>
+        <td><a th:href="@{delete/{id}(id=${truck.id})}">Удалить</a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <p><a href="/trucks/create">Добавить машину</a></p>
+</div>
+<div>
+  <p><a th:href="@{~/}">Вернуться на главную страницу</a></p>
+</div>
+
+</body>
+</html>
